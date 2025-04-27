@@ -15,7 +15,7 @@ class DAO():
         cursor.execute(query)
 
         for row in cursor:
-            result.append(Fermata(row["id_fermata"], row["nome"], row["coordX"], row["coordY"]))
+            result.append(Fermata(**row))
         cursor.close()
         conn.close()
         return result
