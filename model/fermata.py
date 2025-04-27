@@ -9,7 +9,10 @@ class Fermata:
 
 
     def __hash__(self):
-        return self._id_fermata
+        return self.id_fermata
 
     def __str__(self):
-        return f"{self._nome}"
+        return f"{self.nome}"
+
+    def __eq__(self, other):
+        return self.id_fermata == other.id_fermata
