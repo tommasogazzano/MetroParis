@@ -5,6 +5,7 @@ class View(ft.UserControl):
     def __init__(self, page: ft.Page):
         super().__init__()
         # page stuff
+        self._btnCercaPercorso = None
         self._page = page
         self._page.title = "Metro Paris 2025"
         self._page.horizontal_alignment = 'CENTER'
@@ -44,6 +45,8 @@ class View(ft.UserControl):
                                              disabled= True, on_click=self._controller.handleCercaRaggiungibili)
 
 
+        self._btnCercaPercorso = ft.ElevatedButton(text="Cerca Percorso", on_click=self._controller.handleCercaPercorso, disabled=True)
+
         #Load elements in DD
         self._controller.loadFermate(self._ddStazPartenza)
         self._controller.loadFermate(self._ddStazArrivo)
@@ -53,6 +56,7 @@ class View(ft.UserControl):
                        self._ddStazPartenza,
                        self._ddStazArrivo,
                        self._btnCalcola,
+                       self._btnCercaPercorso,
                        ], alignment=ft.MainAxisAlignment.CENTER, spacing=30)
 
         # Row with listview

@@ -1,5 +1,6 @@
 from database.DAO import DAO
 import networkx as nx
+import geopy.distance
 
 class Model:
     def __init__(self):
@@ -8,6 +9,12 @@ class Model:
         self._idMapFermate = {}
         for f in self._fermate:
             self._idMapFermate[f.id_fermata] = f
+
+
+    def getShortestPath(self, u, v):
+        return nx.single_source_dijkstra(self._grafo, u, v)
+
+        pass
 
     def getBFSNodesFromTree(self, source):
         tree = nx.bfs_tree(self._grafo, source)
@@ -41,7 +48,7 @@ class Model:
     def buildGraph(self):
         # aggiungiamo in nodi --> li prendiamo in "fermate"
         self._grafo.add_nodes_from(self._fermate)
-        self.addEdges3()
+        self.addEdgesTempi()
 
     def addEdges1(self):
         '''
@@ -93,6 +100,23 @@ class Model:
                 res.append(e)
         return (res)
 
+    def addEdgesTempi(self):
+        '''
+        Aggiunge archi con peso uguale al tempo di percorrenza dell'arco
+        '''
+
+        self._grafo.clear_edges()
+        allEdges = DAO.getAllEdgesVelocita()
+        for edge in allEdges:
+            u = self._idMapFermate[edge[0]]
+            v = self._idMapFermate[edge[1]]
+            peso = getTraversalTime(u, v, edge[2])
+
+            self._grafo.add_edge(u, v, weight=peso)
+
+
+
+
     def getNumNodi(self):
         return len(self._grafo.nodes)
 
@@ -102,4 +126,11 @@ class Model:
     @property
     def fermate(self):
         return self._fermate
+
+# questo metodo non è per forza della classe Model
+def getTraversalTime(u, v, vel):
+    distanza = geopy.distance.distance((u.coordX, u.coordY), (v.coordX, v.coordY)).km   # .km perché voglio la distanza in km e non in miles
+    time = (distanza / vel )* 60 # in minuti
+    return time
+
 

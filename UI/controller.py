@@ -16,6 +16,7 @@ class Controller:
         self._view.lst_result.controls.append(ft.Text(f"il grafo ha {self._model.getNumArchi()} archi"))
 
         self._view._btnCalcola.disabled = False
+        self._view._btnCercaPercorso.disabled = False
         self._view.update_page()
 
 
@@ -32,6 +33,28 @@ class Controller:
         for n in nodes:
             self._view.lst_result.controls.append(ft.Text(f"{n}"))
         self._view.update_page()
+
+    def handleCercaPercorso(self,e):
+        if self._fermataPartenza is None or self._fermataArrivo is None:
+            self._view.lst_result.controls.clear()
+            self._view.lst_result.controls.append(ft.Text("SELEZIONARE DELLE STAZIONI DAL DROPDOWN!", color = "red"))
+            self._view.update_page()
+            return
+
+        totTime, path = self._model.getShortestPath(self._fermataPartenza, self._fermataArrivo)
+        if path == []:
+            self._view.lst_result.controls.clear()
+            self._view.lst_result.controls.append(ft.Text(f"NON ho trovato un cammino fra {self._fermataPartenza} e {self._fermataArrivo}"))
+            self._view.update_page()
+            return
+
+        self._view.lst_result.controls.clear()
+        self._view.lst_result.controls.append(ft.Text(f"ho trovato un cammino fra {self._fermataPartenza} e {self._fermataArrivo} che impiega {totTime} minuti"))
+        for n in path:
+            self._view.lst_result.controls.append(ft.Text(f"{n}", color = "green"))
+        self._view.update_page()
+
+
 
 
 
